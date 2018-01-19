@@ -1,36 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/aop
         http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
     <context:annotation-config/>
+
+    <aop:aspectj-autoproxy/>
     <!--<context:component-scan base-package="com.projects.springproject">-->
         <!--&lt;!&ndash;<context:include-filter type="assignable" expression="com.projects.springproject.interfaces.Instrument"/>&ndash;&gt;-->
     <!--</context:component-scan>-->
 
     <aop:config>
-        <aop:aspect ref = "audience">
+        <!--<aop:aspect ref="magician">
+            <aop:pointcut id="thinking" expression="execution(* com.projects.springproject.interfaces.Thinker.thinkOfSomething(String))
+            and args(thoughts)"/>
+
+
+            <aop:before
+                    pointcut-ref="thinking"
+                    method="interceptThoughts"
+                    arg-names="thoughts"/>
+        </aop:aspect>-->
+
+        <!--///////////////////////////////////////////-->
+
+       <!-- <aop:aspect ref = "audience">
             <aop:pointcut id="perfomance" expression="execution(* com.projects.springproject.interfaces.Performer.perform(..))"/>
 
-            <!--<aop:before pointcut-ref="perfomance"
+            &lt;!&ndash;<aop:before pointcut-ref="perfomance"
                         method="turnOffCellPhones"/>
             <aop:after-returning pointcut-ref="perfomance"
                                  method="applaud"/>
 
             <aop:after-throwing pointcut-ref="perfomance"
-                                method="demandRefund"/>-->
+                                method="demandRefund"/>&ndash;&gt;
 
             <aop:around
                     pointcut-ref="perfomance"
                     method="watchPerformance"/>
 
-        </aop:aspect>
+        </aop:aspect>-->
+        
+        
+        <!--<aop:aspect>
+            <aop:declare-parents types-matching="com.projects.springproject.interfaces.Performer+"
+                                 implement-interface="com.projects.springproject.interfaces.Contestant"
+                                 default-impl="com.projects.springproject.GraciousContestant"/>
+        </aop:aspect>-->
+
     </aop:config>
+
 
 
     <bean id = "duke" class="com.projects.springproject.Juggler">
@@ -80,8 +107,33 @@
 
     <bean id= "theStage" class="com.projects.springproject.Stage" factory-method="getInstance"/>
 
-
     <bean id="audience" class="com.projects.springproject.Audience"/>
+
+    <bean id="magician" class="com.projects.springproject.Magican"/>
+
+    <bean id="volunteer" class="com.projects.springproject.Volunteer"/>
+
+    <bean class="com.projects.springproject.ContestantIntroducer" />
+
+    <bean id="criticismEngine"
+          class="com.projects.springproject.CriticismEngineImpl">
+        <property name="criticismPool">
+            <list>
+                <value>I’m not being rude, but that was appalling.</value>
+                <value>You may be the least talented
+                    person in this show.</value>
+                <value>Do everyone a favor and keep your day job.</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="com.projects.springproject.JudgeAspect"
+          factory-method="aspectOf">
+        <property name="criticismEngine" ref="criticismEngine" />
+        
+    </bean>
+
+
 
 
 </beans>
